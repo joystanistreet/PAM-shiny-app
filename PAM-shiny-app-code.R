@@ -10,7 +10,6 @@ library(here)
 library(RColorBrewer)
 library(leaflet)
 library(sf)
-#library(rgdal)
 
 # set up PAM metadata
 
@@ -19,22 +18,13 @@ pam_metadata<-read_csv(here("deployment_summary.csv")) %>%
 
 # set up other layers
 
-#canada_eez<-read_sf("D:/arcgis/R_shapefiles/EEZ_WGS/EEZ_WGS.shp") 
-#names(st_geometry(canada_eez)) = NULL
-
-#eez<-read_sf("C:/Users/STANISTREETJ/Documents/R/basemap-main/SHAPES/EEZ/Can_EEZ.shp")
-#EEZ <- read_sf("SHAPES/EEZ/Can_EEZ.shp")
-
-
-#hague_line<-read_sf("D:/arcgis/R_shapefiles/hague_line/hague_line.shp")
-
-# shapefiles exported from Arcmap with geographic coordinate system (WGS 1984)
-eez<-read_sf("C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/EEZ_WGS/EEZ_WGS.shp") 
+eez<-read_sf("C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/Canada_EEZ/EEZ_WGS.shp") 
 all_mpas<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/MPAs_WGS1984/MPAs_WGS1984.shp')
 fcbb_aoi<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/FCBB_AOI_WGS1984/FCBB_AOI_WGS1984.shp')
 nbw_ch<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/NBW_CH_WGS1984/NBW_CH_WGS1984.shp')
 narw_ch<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/NARW_CH_WGS1984/NARW_CH_WGS1984.shp')
-#oecms<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/DFO_OECM_MPO_AMCEZ.shp')
+oecms<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/DFO_OECM_MPO_AMCEZ.shp')%>% 
+  st_transform(4326)
 
 # assign colors to projects for plotting
 
@@ -93,8 +83,8 @@ ui <- bootstrapPage(theme = shinytheme("flatly"),
                                   checkboxInput("fcbb_aoi","Fundian Channel-Browns Bank AOI",
                                                 value = F),
                                   
-                                  #checkboxInput("oecms","Other Effective Area-based Conservation Measures",
-                                     #           value = F),
+                                  checkboxInput("oecms","Other Effective Area-based Conservation Measures",
+                                                value = F),
                                   
                                   checkboxInput("nbw_ch","Northern Bottlenose Whale Critical Habitat",
                                                 value = F),
@@ -253,25 +243,25 @@ server <- function(input, output, session) {
                                   smoothFactor = 3)}
     })
     
-    # observe({
-    #   
-    #   proxy <- leafletProxy("map")
-    #   
-    #   proxy %>% clearGroup("OECM")
-    #   
-    #   if (input$oecms) {
-    #     
-    #     proxy %>% addPolygons(data = oecms,
-    #                           group = "OECM",
-    #                           stroke = T,
-    #                           weight = 1,
-    #                           color = 'yellow',
-    #                           fill = T,
-    #                           fillColor = 'yellow',
-    #                           fillOpacity = 0.25,
-    #                           smoothFactor = 3)}
-    # })
-    # 
+    observe({
+
+      proxy <- leafletProxy("map")
+
+      proxy %>% clearGroup("OECM")
+
+      if (input$oecms) {
+
+        proxy %>% addPolygons(data = oecms,
+                              group = "OECM",
+                              stroke = T,
+                              weight = 1,
+                              color = 'blue',
+                              fill = T,
+                              fillColor = 'blue',
+                              fillOpacity = 0.25,
+                              smoothFactor = 3)}
+    })
+
     observe({
         
         proxy <- leafletProxy("map")
