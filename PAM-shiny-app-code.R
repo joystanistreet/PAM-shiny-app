@@ -25,6 +25,8 @@ nbw_ch<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/NBW_CH_WGS1
 narw_ch<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/NARW_CH_WGS1984/NARW_CH_WGS1984.shp')
 oecms<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/R_shapefiles/DFO_OECM_MPO_AMCEZ.shp')%>% 
   st_transform(4326)
+network_sites<-read_sf('C:/Users/STANISTREETJ/Documents/arcgis/networksites_proposed_OEM_MPA_20221128/networksites_proposed_OEM_MPA_20221128.shp')%>% 
+  st_transform(4326)
 
 # assign colors to projects for plotting
 
@@ -90,6 +92,9 @@ ui <- bootstrapPage(theme = shinytheme("flatly"),
                                                 value = F),
                                   
                                   checkboxInput("narw_ch","North Atlantic Right Whale Critical Habitat",
+                                                value = F),
+                                  
+                                  checkboxInput("network_sites","Proposed Conservation Network Sites",
                                                 value = F),
                                   
                                   checkboxInput("eez","EEZ",
@@ -262,6 +267,26 @@ server <- function(input, output, session) {
                               smoothFactor = 3)}
     })
 
+    observe({
+      
+      proxy <- leafletProxy("map")
+      
+      proxy %>% clearGroup("NETWORK")
+      
+      if (input$network_sites) {
+        
+        proxy %>% addPolygons(data = network_sites,
+                              group = "NETWORK",
+                              stroke = T,
+                              weight = 1,
+                              color = 'purple',
+                              fill = T,
+                              fillColor = 'purple',
+                              fillOpacity = 0.25,
+                              smoothFactor = 3)}
+    })
+    
+    
     observe({
         
         proxy <- leafletProxy("map")
