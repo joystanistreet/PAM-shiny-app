@@ -13,7 +13,7 @@ library(sf)
 
 # set up PAM metadata
 
-pam_metadata<-read_csv(here("deployment_summary.csv")) %>% 
+pam_metadata<-read_csv("R:\\Science\\CetaceanOPPNoise\\CetaceanOPPNoise_2\\PAM_metadata\\deployment_summary.csv") %>% 
     mutate(project = factor(Project))
 
 # set up other layers
